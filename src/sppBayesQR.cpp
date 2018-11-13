@@ -79,35 +79,35 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 //               (pow(spCoord1[aa] - spCoord1[bb],2) +
 //               pow(spCoord2[aa] - spCoord2[bb],2)));
 
-        covMat2 = covMat.submat(indices, indices);
-        covMatAux = covMat.cols(indices);
+        /*covmat2 = covmat.submat(indices, indices);
+        covmataux = covmat.cols(indices);
 
-        auxCov.diag().fill(jitter);
+        auxcov.diag().fill(jitter);
 
-        cholCov = arma::chol((1-alphaValue)*covMat2 + auxCov, "lower");
-        covMatInv = arma::solve(trimatl(cholCov), covMatAux.t());
-        matAux = covMatInv.t() * covMatInv;
-        diagU = diagmat(sqrt(1/zSample));
+        cholcov = arma::chol((1-alphavalue)*covmat2 + auxcov, "lower");
+        covmatinv = arma::solve(trimatl(cholcov), covmataux.t());
+        mataux = covmatinv.t() * covmatinv;
+        diagu = diagmat(sqrt(1/zsample));
 
-        sigmaDot = diagmat(alphaValue +
-          (1-alphaValue)*(covMat.diag() - matAux.diag())).i();
+        sigmadot = diagmat(alphavalue +
+          (1-alphavalue)*(covmat.diag() - mataux.diag())).i();
 
-        cholCov2 = (1-alphaValue)*covMat2 + covMatAux.t()*sigmaDot*covMatAux;
+        cholcov2 = (1-alphavalue)*covmat2 + covmataux.t()*sigmadot*covmataux;
 
-        matM = arma::chol(cholCov2 + auxCov, "lower");
-        matM2 = solve(trimatl(matM), covMatAux.t());
-        matM3 = matM2.t() * matM2;
+        matm = arma::chol(cholcov2 + auxcov, "lower");
+        matm2 = solve(trimatl(matm), covmataux.t());
+        matm3 = matm2.t() * matm2;
 
-        CovCov = sigmaDot - sigmaDot * matM3 * sigmaDot;
+        covcov = sigmadot - sigmadot * matm3 * sigmadot;
 
-        SigmaMinusOne = ((1/(sigmaValue*psi2)) * X.t() * diagU * CovCov *
-          diagU * X) + B0.i();
-        Sigma = SigmaMinusOne.i();
+        sigmaminusone = ((1/(sigmavalue*psi2)) * x.t() * diagu * covcov *
+          diagu * x) + b0.i();
+        sigma = sigmaminusone.i();
 
-        mu = Sigma * ((1/(sigmaValue*psi2))*(X.t() * diagU * CovCov *
-                diagU * (y - theta*zSample)));
+        mu = sigma * ((1/(sigmavalue*psi2))*(x.t() * diagu * covcov *
+                diagu * (y - theta*zsample)));*/
 
-        betaValue = mvrnormRcpp(mu, Sigma);
+        betaValue = 21;
 
         resVec = y - theta*zSample - X * betaValue;
 

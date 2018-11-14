@@ -28,8 +28,7 @@ double mtM(arma::vec aux, double theta, double psi2, double sigma,
 
   double output;
   int nNeg, nNegRef;
-  double xRef, weightsRef;
-  double prop = rexp(1, tuneV);
+  double prop = rexp(1, tuneV)[0];
   
   double weights = logPosteriorV(aux, theta, psi2, sigma, vSample, prop,
                                C, indice);

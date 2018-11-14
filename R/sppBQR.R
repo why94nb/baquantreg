@@ -79,7 +79,7 @@ sppBQR <- function(formula, tau = 0.5, data, itNum, thin=1,
     outer(spatial2, spatial2, "-")^2
 
   output$chains <- lapply(tau, function(a){
-    sppBayesQR(tau = a, y = y, X = X, itNum = itNum, thin = thin,
+    sppBayesQR(tau = tau, y = y, X = X, itNum = itNum, thin = thin,
             betaValue = betaValue, sigmaValue = sigmaValue,
             matDist = matDist,
             lambdaVec = lambdaVec, lambda = lambda,

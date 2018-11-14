@@ -24,8 +24,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
    int n = X.n_rows;
    int p = X.n_cols;
-   Rcout << n << std::endl;
-   Rcout << p << std::endl;
+
    double theta, psi2, s0, n0, nTilde, sTilde, delta2;
 
    NumericVector sigmaSample(itNum), termsSum(n);
@@ -58,14 +57,12 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
   lambdaSample[0] = lambda;
   if (includeAlpha) alphaSample[0] = alphaValue;
   else alphaValue = 0.0;
-  Rcout << alphaValue << std::endl;
 
   NumericVector lambdaPrior = logPriorKappa2(lambdaVec, shapeL, rateL);
-  Rcout << lambdaPrior << std::endl;
+
   IntegerVector seqRefresh = seq(1, itNum/refresh)*(refresh);
 
    for(int k = 1; k < itNum; k++) {
-	   Rcout << k << std::endl;
       for(int j = 0; j < thin; j++) {
 
         if(!quiet){
@@ -82,50 +79,47 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 //               (pow(spCoord1[aa] - spCoord1[bb],2) +
 //               pow(spCoord2[aa] - spCoord2[bb],2)));
 
-        /*covmat2 = covmat.submat(indices, indices);
-        covmataux = covmat.cols(indices);
+        covMat2 = covMat.submat(indices, indices);
+        covMatAux = covMat.cols(indices);
 
-        auxcov.diag().fill(jitter);
+        auxCov.diag().fill(jitter);
 
-        cholcov = arma::chol((1-alphavalue)*covmat2 + auxcov, "lower");
-        covmatinv = arma::solve(trimatl(cholcov), covmataux.t());
-        mataux = covmatinv.t() * covmatinv;
-        diagu = diagmat(sqrt(1/zsample));
+        cholCov = arma::chol((1-alphaValue)*covMat2 + auxCov, "lower");
+        covMatInv = arma::solve(trimatl(cholCov), covMatAux.t());
+        matAux = covMatInv.t() * covMatInv;
+        diagU = diagmat(sqrt(1/zSample));
 
-        sigmadot = diagmat(alphavalue +
-          (1-alphavalue)*(covmat.diag() - mataux.diag())).i();
+        sigmaDot = diagmat(alphaValue +
+          (1-alphaValue)*(covMat.diag() - matAux.diag())).i();
 
-        cholcov2 = (1-alphavalue)*covmat2 + covmataux.t()*sigmadot*covmataux;
+        cholCov2 = (1-alphaValue)*covMat2 + covMatAux.t()*sigmaDot*covMatAux;
 
-        matm = arma::chol(cholcov2 + auxcov, "lower");
-        matm2 = solve(trimatl(matm), covmataux.t());
-        matm3 = matm2.t() * matm2;
+        matM = arma::chol(cholCov2 + auxCov, "lower");
+        matM2 = solve(trimatl(matM), covMatAux.t());
+        matM3 = matM2.t() * matM2;
 
-        covcov = sigmadot - sigmadot * matm3 * sigmadot;
+        CovCov = sigmaDot - sigmaDot * matM3 * sigmaDot;
 
-        sigmaminusone = ((1/(sigmavalue*psi2)) * x.t() * diagu * covcov *
-          diagu * x) + b0.i();
-        sigma = sigmaminusone.i();
+        SigmaMinusOne = ((1/(sigmaValue*psi2)) * X.t() * diagU * CovCov *
+          diagU * X) + B0.i();
+        Sigma = SigmaMinusOne.i();
 
-        mu = sigma * ((1/(sigmavalue*psi2))*(x.t() * diagu * covcov *
-                diagu * (y - theta*zsample)));*/
+        mu = Sigma * ((1/(sigmaValue*psi2))*(X.t() * diagU * CovCov *
+                diagU * (y - theta*zSample)));
 
-        betaValue = 21.0;
-		Rcout << betaValue << std::endl;
-        /*resVec = y - theta*zSample - X * betaValue;
+        betaValue = mvrnormRcpp(mu, Sigma);
+
+        resVec = y - theta*zSample - X * betaValue;
 
         nTilde = n0 + 3*n;
         sTilde =  arma::as_scalar(s0 + 2*sum(zSample) + resVec.t() * diagU *
-          CovCov * diagU * resVec);*/
+          CovCov * diagU * resVec);
 
-        //sigmaValue = rinvgammaRcpp(nTilde/2,sTilde/2);
-		sigmaValue = 18.0;
-		Rcout << sigmaValue << std::endl;
+        sigmaValue = rinvgammaRcpp(nTilde/2,sTilde/2);
 
         for(int o = 0; o < n; o++){
-          //zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
-          //                 zSample[o], o, CovCov, tuneV, kMT);
-			zSample[o] = 1.0;
+          zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
+                           zSample[o], o, CovCov, tuneV, kMT);
         }
 
 //         lambda = mhKappa2(lambda, spCoord1, spCoord2, resVec, diagU,
@@ -133,17 +127,16 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 //                                tuneP, alphaValue, jitter, indices, m);
 
         if (discLambda) {
-          lambda = discKappa2(lambdaVec, lambdaPrior, matDist,
+          /*lambda = discKappa2(lambdaVec, lambdaPrior, matDist,
                               resVec, diagU, covMat, CovCov, alphaValue,
-                              jitter, indices, m);
+                              jitter, indices, m);*/
+			lambda = 1.0;
         }
         else {
-          //lambda = mhKappa2(lambda, matDist, resVec, diagU,
-           //                covMat, CovCov,
-           //                tuneP, alphaValue, jitter, indices, m,
-           //                shapeL, rateL);
-		  lambda = 1.0;
-		  Rcout << lambda << std::endl;
+          lambda = mhKappa2(lambda, matDist, resVec, diagU,
+                           covMat, CovCov,
+                           tuneP, alphaValue, jitter, indices, m,
+                           shapeL, rateL);
         }
 
         if (includeAlpha){

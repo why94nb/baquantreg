@@ -108,7 +108,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
                 diagu * (y - theta*zsample)));*/
 
         betaValue = 21;
-
+		betaValue.print("beta done");
         resVec = y - theta*zSample - X * betaValue;
 
         /*nTilde = n0 + 3*n;
@@ -116,7 +116,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
           CovCov * diagU * resVec);*/
 
         sigmaValue = 18;
-
+		sigmaValue.print("sigma done");
         for(int o = 0; o < n; o++){
           //zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
           //                 zSample[o], o, CovCov, tuneV, kMT);
@@ -131,6 +131,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
           lambda = discKappa2(lambdaVec, lambdaPrior, matDist,
                               resVec, diagU, covMat, CovCov, alphaValue,
                               jitter, indices, m);
+		  lambda.print("discLambda TRUE")
         }
         else {
           //lambda = mhKappa2(lambda, matDist, resVec, diagU,
@@ -138,11 +139,13 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
            //                tuneP, alphaValue, jitter, indices, m,
            //                shapeL, rateL);
 			lambda = 1;
+			lambda.print("discLambda FALSE")
         }
 
         if (includeAlpha){
           alphaValue = mhAlpha2(alphaValue, resVec, diagU, covMat, covMat2,
                                 covMatAux, tuneA, jitter, indices, m);
+		  alphaValue.print("alphaValue TRUE")
         }
 
 

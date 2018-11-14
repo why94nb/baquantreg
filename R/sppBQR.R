@@ -99,11 +99,11 @@ sppBQR <- function(formula, tau = 0.5, data, itNum, thin=1,
     1-sum(diff(b$alphaSample)==0)/(itNum-1)
   })
 
-  output$acceptRateV <- lapply(output$chains, function(b){
-    1-apply(b$vSample, 2, function(bb){
-      sum(diff(bb)==0)/length(diff(bb))
-    })
-  })
+  # output$acceptRateV <- lapply(output$chains, function(b){
+  #   1-apply(b$vSample, 2, function(bb){
+  #     sum(diff(bb)==0)/length(diff(bb))
+  #   })
+  # })
 
   output$tau <- tau
   output$formula <- formula

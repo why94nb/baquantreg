@@ -100,13 +100,19 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 		   mu = Sigma * ((1 / (sigmaValue*psi2))*(X.t() * diagU * CovCov *
 			   diagU * (y - theta*zSample)));
 
-		   betaValue = mean(y);
+		   betaValue = mvrnormRcpp(mu, Sigma);
 
+		   resVec = y - theta*zSample - X * betaValue;
 
-		   sigmaValue = 1.0;
+		   nTilde = n0 + 3 * n;
+		   sTilde = arma::as_scalar(s0 + 2 * sum(zSample) + resVec.t() * diagU *
+			   CovCov * diagU * resVec);
+
+		   sigmaValue = rinvgammaRcpp(nTilde / 2, sTilde / 2);
 
 		   for (int o = 0; o < n; o++) {
-			   zSample[o] = 1.0;
+			   zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
+				   zSample[o], o, CovCov, tuneV, kMT);
 		   }
 
 		   if (discLambda) {

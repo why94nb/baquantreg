@@ -24,7 +24,8 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
    int n = X.n_rows;
    int p = X.n_cols;
-
+   Rcout << n << std::endl;
+   Rcout << p << std::endl;
    double theta, psi2, s0, n0, nTilde, sTilde, delta2;
 
    NumericVector sigmaSample(itNum), termsSum(n);

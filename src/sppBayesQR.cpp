@@ -57,12 +57,14 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
   lambdaSample[0] = lambda;
   if (includeAlpha) alphaSample[0] = alphaValue;
   else alphaValue = 0.0;
+  Rcout << alphaValue << std::endl;
 
   NumericVector lambdaPrior = logPriorKappa2(lambdaVec, shapeL, rateL);
-
+  Rcout << lambdaPrior << std::endl;
   IntegerVector seqRefresh = seq(1, itNum/refresh)*(refresh);
 
    for(int k = 1; k < itNum; k++) {
+	   Rcout << k << std::endl;
       for(int j = 0; j < thin; j++) {
 
         if(!quiet){

@@ -61,9 +61,86 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
    IntegerVector seqRefresh = seq(1, itNum / refresh)*(refresh);
 
-   
+   for (int k = 1; k < itNum; k++) {
+	   for (int j = 0; j < thin; j++) {
+
+		   if (!quiet) {
+			   if (is_true(any(k + 1 == seqRefresh))) {
+				   Rcout << "Iteration = " << k + 1 << std::endl;
+			   }
+		   }
+
+		   covMat = exp(-lambda*matDist);
+
+		   covMat2 = covMat.submat(indices, indices);
+		   covMatAux = covMat.cols(indices);
+
+		   auxCov.diag().fill(jitter);
+
+		   cholCov = arma::chol((1 - alphaValue)*covMat2 + auxCov, "lower");
+		   covMatInv = arma::solve(trimatl(cholCov), covMatAux.t());
+		   matAux = covMatInv.t() * covMatInv;
+		   diagU = diagmat(sqrt(1 / zSample));
+
+		   sigmaDot = diagmat(alphaValue +
+			   (1 - alphaValue)*(covMat.diag() - matAux.diag())).i();
+
+		   cholCov2 = (1 - alphaValue)*covMat2 + covMatAux.t()*sigmaDot*covMatAux;
+
+		   matM = arma::chol(cholCov2 + auxCov, "lower");
+		   matM2 = solve(trimatl(matM), covMatAux.t());
+		   matM3 = matM2.t() * matM2;
+
+		   CovCov = sigmaDot - sigmaDot * matM3 * sigmaDot;
+
+		   SigmaMinusOne = ((1 / (sigmaValue*psi2)) * X.t() * diagU * CovCov *
+			   diagU * X) + B0.i();
+		   Sigma = SigmaMinusOne.i();
+
+		   mu = Sigma * ((1 / (sigmaValue*psi2))*(X.t() * diagU * CovCov *
+			   diagU * (y - theta*zSample)));
+
+		   betaValue = mvrnormRcpp(mu, Sigma);
+
+
+		   sigmaValue = 18.0;
+
+		   for (int o = 0; o < n; o++) {
+			   zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
+				   zSample[o], o, CovCov, tuneV, kMT);
+		   }
+
+		   if (discLambda) {
+			   lambda = discKappa2(lambdaVec, lambdaPrior, matDist,
+				   resVec, diagU, covMat, CovCov, alphaValue,
+				   jitter, indices, m);
+		   }
+		   else {
+			   lambda = mhKappa2(lambda, matDist, resVec, diagU,
+				   covMat, CovCov,
+				   tuneP, alphaValue, jitter, indices, m,
+				   shapeL, rateL);
+		   }
+
+		   if (includeAlpha) {
+			   alphaValue = mhAlpha2(alphaValue, resVec, diagU, covMat, covMat2,
+				   covMatAux, tuneA, jitter, indices, m);
+		   }
+
+
+	   }
+
+	   betaSample.row(k) = betaValue.t();
+	   vSample.row(k) = zSample.t();
+	   sigmaSample[k] = sigmaValue;
+	   lambdaSample[k] = lambda;
+	   alphaSample[k] = alphaValue;
+   }
+
    return Rcpp::List::create(
-	   Rcpp::Named("BetaSample") = n,
-   Rcpp::Named("SigmaSample") = p);
-   
+	   Rcpp::Named("BetaSample") = betaSample,
+	   Rcpp::Named("SigmaSample") = sigmaSample,
+	   Rcpp::Named("vSample") = vSample,
+	   Rcpp::Named("LambdaSample") = lambdaSample,
+	   Rcpp::Named("alphaSample") = alphaSample);
 }

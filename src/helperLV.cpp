@@ -36,7 +36,7 @@ double mtM(arma::vec aux, double theta, double psi2, double sigma,
   double weightsRef = logPosteriorV(aux, theta, psi2, sigma, vSample, curV,
                                   C, indice);
 
-  double probA = weights - weightsRef;
+  double probA = weights - weightsRef + dexp(prop, tuneV, log = TRUE)[0] - dexp(curV, tuneV, log = TRUE)[0];
   if (runif(1)[0] < exp(probA)) output = prop;
   else output = curV;
   return output;

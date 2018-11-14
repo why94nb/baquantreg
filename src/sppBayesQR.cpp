@@ -27,7 +27,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
    
    return Rcpp::List::create(
-        Rcpp::Named("BetaSample") = n,
-        Rcpp::Named("SigmaSample") = p
-   )
+	   Rcpp::Named("BetaSample") = n,
+   Rcpp::Named("SigmaSample") = p);
+   
 }

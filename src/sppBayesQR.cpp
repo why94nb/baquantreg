@@ -121,10 +121,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 				   jitter, indices, m);
 		   }
 		   else {
-			   lambda = mhKappa2(lambda, matDist, resVec, diagU,
-				   covMat, CovCov,
-				   tuneP, alphaValue, jitter, indices, m,
-				   shapeL, rateL);
+			   lambda = 1;
 		   }
 
 		   if (includeAlpha) {

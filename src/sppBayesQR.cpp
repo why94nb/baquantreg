@@ -62,6 +62,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
    IntegerVector seqRefresh = seq(1, itNum / refresh)*(refresh);
 
    for (int k = 1; k < itNum; k++) {
+	   Rcout << k << std::endl;
 	   for (int j = 0; j < thin; j++) {
 
 		   if (!quiet) {
@@ -101,7 +102,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 			   diagU * (y - theta*zSample)));
 
 		   betaValue = 1;
-
+		   Rcout << betaValue << std::endl;
 		   resVec = y - theta*zSample - X * betaValue;
 
 		   nTilde = n0 + 3 * n;

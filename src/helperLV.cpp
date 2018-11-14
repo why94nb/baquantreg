@@ -25,7 +25,7 @@ NumericVector calcLogWeights(NumericVector weights){
 double mtM(arma::vec aux, double theta, double psi2, double sigma,
            arma::vec vSample, double curV, int indice, arma::mat C,
            double tuneV, int k){
-
+	bool T = true;
   double output;
   int nNeg, nNegRef;
   double prop = rexp(1, tuneV)[0];

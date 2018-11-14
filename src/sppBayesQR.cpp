@@ -111,9 +111,9 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
         resVec = y - theta*zSample - X * betaValue;
 
-        nTilde = n0 + 3*n;
+        /*nTilde = n0 + 3*n;
         sTilde =  arma::as_scalar(s0 + 2*sum(zSample) + resVec.t() * diagU *
-          CovCov * diagU * resVec);
+          CovCov * diagU * resVec);*/
 
         sigmaValue = 18;
 

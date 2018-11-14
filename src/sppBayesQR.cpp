@@ -107,7 +107,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
         mu = sigma * ((1/(sigmavalue*psi2))*(x.t() * diagu * covcov *
                 diagu * (y - theta*zsample)));*/
 
-        betaValue = 21;
+        betaValue = 21.0;
 		Rcout << betaValue << std::endl;
         /*resVec = y - theta*zSample - X * betaValue;
 
@@ -116,13 +116,13 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
           CovCov * diagU * resVec);*/
 
         //sigmaValue = rinvgammaRcpp(nTilde/2,sTilde/2);
-		sigmaValue = 18;
+		sigmaValue = 18.0;
 		Rcout << sigmaValue << std::endl;
 
         for(int o = 0; o < n; o++){
           //zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
           //                 zSample[o], o, CovCov, tuneV, kMT);
-			zSample[o] = 1;
+			zSample[o] = 1.0;
         }
 
 //         lambda = mhKappa2(lambda, spCoord1, spCoord2, resVec, diagU,
@@ -139,7 +139,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
            //                covMat, CovCov,
            //                tuneP, alphaValue, jitter, indices, m,
            //                shapeL, rateL);
-		  lambda = 1;
+		  lambda = 1.0;
 		  Rcout << lambda << std::endl;
         }
 

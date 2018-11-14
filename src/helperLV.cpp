@@ -28,31 +28,17 @@ double mtM(arma::vec aux, double theta, double psi2, double sigma,
 
   double output;
   int nNeg, nNegRef;
-  NumericVector prop(k), xRef(k), weights(k), weights2(k), weightsRef(k);
-  prop = rexp(k, tuneV);
-  for (int i = 0; i < k; i++){
-    weights[i] = logPosteriorV(aux, theta, psi2, sigma, vSample, prop[i],
+  double xRef, weightsRef;
+  double prop = rexp(1, tuneV);
+  
+  double weights = logPosteriorV(aux, theta, psi2, sigma, vSample, prop,
                                C, indice);
-  }
-
-  weights += log(dexp(prop, tuneV));
-  weights2 = calcLogWeights(weights);
-
-  double y = RcppArmadillo::sample(prop, 1, false, weights2)[0];
-  for (int ii = 0; ii < k-1; ii++){
-    xRef[ii] = rexp(1, tuneV)[0];
-    weightsRef[ii] = logPosteriorV(aux, theta, psi2, sigma, vSample, xRef[ii],
-                                   C, indice);
-  }
-  xRef[k-1] = curV;
-  weightsRef[k-1] = logPosteriorV(aux, theta, psi2, sigma, vSample, xRef[k-1],
+  
+  double weightsRef = logPosteriorV(aux, theta, psi2, sigma, vSample, curV,
                                   C, indice);
 
-  weightsRef += log(dexp(xRef, tuneV));
-
-  double probA = (max(weights) + log(sum(exp(weights - max(weights))))) -
-    (max(weightsRef) + sum(exp(weightsRef - max(weightsRef))));
-  if (runif(1)[0] < exp(probA)) output = y;
+  double probA = weights - weightsRef;
+  if (runif(1)[0] < exp(probA)) output = prop;
   else output = curV;
   return output;
 }

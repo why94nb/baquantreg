@@ -112,7 +112,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 
 		   for (int o = 0; o < n; o++) {
 			   zSample[o] = mtM(y - X * betaValue, theta, psi2, sigmaValue, zSample,
-				   zSample[o], o, CovCov, sigmaValue, kMT);
+				   zSample[o], o, CovCov, tuneV, kMT);
 		   }
 
 		   if (discLambda) {

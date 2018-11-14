@@ -20,7 +20,6 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
                    bool quiet, int refresh, double jitter, bool includeAlpha,
                    double tuneV, int kMT, bool discLambda){
 
-   RNGScope scope;
 
    int n = X.n_rows;
    int p = X.n_cols;

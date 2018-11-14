@@ -88,7 +88,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 		   cholCov2 = (1 - alphaValue)*covMat2 + covMatAux.t()*sigmaDot*covMatAux;
 
 		   matM = arma::chol(cholCov2 + auxCov, "lower");
-		   matM2 = solve(trimatl(matM), covMatAux.t());
+		   matM2 = arma::solve(trimatl(matM), covMatAux.t());
 		   matM3 = matM2.t() * matM2;
 
 		   CovCov = sigmaDot - sigmaDot * matM3 * sigmaDot;
@@ -100,7 +100,7 @@ List sppBayesQR(double tau, arma::colvec y, arma::mat X, int itNum,
 		   mu = Sigma * ((1 / (sigmaValue*psi2))*(X.t() * diagU * CovCov *
 			   diagU * (y - theta*zSample)));
 
-		   betaValue = mvrnormRcpp(mu, Sigma);
+		   betaValue = mean(y);
 
 
 		   sigmaValue = 1.0;
